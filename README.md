@@ -32,6 +32,8 @@ A simple and efficient command-line tool built with Go to automatically organize
 # To organize files in a directory located at /home/user/Downloads
 go run main.go /home/user/Downloads
 
+---
+
 ### ⚠️ **Safety Warning**
 
 This tool permanently moves files on your filesystem. It is highly recommended to **first test it on a sample directory** with copied files before running it on important directories.
