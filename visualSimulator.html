@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go File Organizer CLI - Showcase</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals (Beige, Slate, Subtle Amber Accent) -->
+    <!-- Application Structure Plan: A single-page simulator. The main section features an interactive visual representation of a messy directory, a 'Run' button, and an output area showing the organized result and a console log of the process. This interactive simulation is more engaging than static text and directly demonstrates the tool's functionality. Static sections below provide context on features, usage, and future plans, derived from the README. -->
+    <!-- Visualization & Content Choices: The core 'visualization' is a DOM-based file system simulator. Info: Directory state before/after. Goal: Demonstrate the organization process. Viz Method: HTML divs styled as files/folders. Interaction: 'Run' button triggers a JS-driven animation where files move to new folders and a log is populated. Justification: This provides a clear, step-by-step visual explanation of the CLI tool's actions, which is more effective for understanding than just reading about it. Library/Method: Vanilla JS for DOM manipulation. NO SVG/Mermaid used. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF7; /* Warm Beige */
+        }
+        .font-fira {
+            font-family: 'Fira Code', monospace;
+        }
+        .file-item, .folder-item {
+            transition: all 0.5s ease-in-out;
+            opacity: 1;
+        }
+        .file-item.fade-out, .folder-item.fade-out {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <header class="bg-slate-800 text-white p-6 shadow-md">
+        <div class="container mx-auto max-w-5xl">
+            <h1 class="text-3xl font-bold">Go File Organizer CLI</h1>
+            <p class="text-slate-300 mt-1">An interactive showcase of a simple and efficient command-line tool.</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto max-w-5xl p-4 md:p-8">
+        
+        <!-- Interactive Simulator Section -->
+        <section class="bg-white p-6 rounded-lg shadow-lg border border-slate-200">
+            <h2 class="text-2xl font-bold mb-4 border-b pb-2">Live Simulator</h2>
+            <p class="mb-6 text-slate-600">This is a simulation of the Go File Organizer CLI. The tool scans a directory and moves files into subdirectories based on their extensions. Click the "Run Organizer" button to see it in action!</p>
+            
+            <div class="flex justify-center space-x-4 mb-8">
+                <button id="run-button" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-6 rounded-lg transition-transform transform hover:scale-105 shadow-md">
+                    ▶️ Run Organizer
+                </button>
+                <button id="reset-button" class="bg-slate-500 hover:bg-slate-600 text-white font-bold py-2 px-6 rounded-lg transition-transform transform hover:scale-105 shadow-md hidden">
+                    🔄 Reset Simulation
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Before -->
+                <div>
+                    <h3 class="font-bold text-lg mb-2 text-center text-slate-700">📂 Source Directory (Before)</h3>
+                    <div id="source-directory" class="bg-slate-50 p-4 rounded-md border border-slate-200 min-h-[200px] flex flex-wrap gap-2 content-start">
+                        <!-- Initial files will be populated by JS -->
+                    </div>
+                </div>
+                <!-- After -->
+                <div>
+                    <h3 class="font-bold text-lg mb-2 text-center text-slate-700">🗂️ Organized Directory (After)</h3>
+                    <div id="destination-directory" class="bg-slate-50 p-4 rounded-md border border-slate-200 min-h-[200px]">
+                        <!-- Organized folders will appear here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Console Log -->
+            <div class="mt-8">
+                <h3 class="font-bold text-lg mb-2 text-slate-700">🖥️ Console Output</h3>
+                <div class="bg-slate-900 text-white font-fira p-4 rounded-md text-sm min-h-[150px] max-h-[300px] overflow-y-auto">
+                    <pre id="console-log"></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="mt-12 bg-white p-6 rounded-lg shadow-lg border border-slate-200">
+            <h2 class="text-2xl font-bold mb-4 border-b pb-2">🚀 Features</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-slate-700">
+                <div class="flex items-start space-x-3">
+                    <span class="text-2xl">⚙️</span>
+                    <div>
+                        <h4 class="font-semibold">Automatic Organization</h4>
+                        <p class="text-sm">Scans a directory and moves files into folders named after their extensions.</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <span class="text-2xl">🧠</span>
+                    <div>
+                        <h4 class="font-semibold">Intelligent Handling</h4>
+                        <p class="text-sm">Correctly ignores subdirectories and files that do not have an extension.</p>
+                    </div>
+                </div>
+                 <div class="flex items-start space-x-3">
+                    <span class="text-2xl">🛡️</span>
+                    <div>
+                        <h4 class="font-semibold">Safe Directory Creation</h4>
+                        <p class="text-sm">Automatically creates destination directories only if they don't already exist.</p>
+                    </div>
+                </div>
+                 <div class="flex items-start space-x-3">
+                    <span class="text-2xl">💻</span>
+                    <div>
+                        <h4 class="font-semibold">Cross-Platform</h4>
+                        <p class="text-sm">Built with Go's standard library to run on Windows, macOS, and Linux.</p>
+                    </div>
+                </div>
+                 <div class="flex items-start space-x-3">
+                    <span class="text-2xl">🎯</span>
+                    <div>
+                        <h4 class="font-semibold">Simple to Use</h4>
+                        <p class="text-sm">Takes a single command-line argument for the directory path.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- How to Use Section -->
+        <section class="mt-12 bg-white p-6 rounded-lg shadow-lg border border-slate-200">
+            <h2 class="text-2xl font-bold mb-4 border-b pb-2">⚙️ How to Use</h2>
+            <p class="mb-4 text-slate-600">The tool is run from your terminal. Navigate to the project directory and use the `go run` command, providing the path to the directory you want to organize.</p>
+            <div class="bg-slate-900 text-white font-fira p-4 rounded-md">
+                <code class="block text-green-400"># To organize files in a directory located at /home/user/Downloads</code>
+                <code>go run main.go /home/user/Downloads</code>
+            </div>
+             <div class="mt-4 p-4 bg-amber-100 border-l-4 border-amber-500 text-amber-700 rounded-md">
+                <h4 class="font-bold">⚠️ Safety Warning</h4>
+                <p>This tool permanently moves files on your filesystem. It is highly recommended to first test it on a sample directory with copied files before running it on important directories.</p>
+            </div>
+        </section>
+
+        <!-- Future Improvements Section -->
+        <section class="mt-12 bg-white p-6 rounded-lg shadow-lg border border-slate-200">
+            <h2 class="text-2xl font-bold mb-4 border-b pb-2">✨ Future Improvements</h2>
+            <ul class="list-disc list-inside space-y-2 text-slate-700">
+                <li><strong class="font-semibold">Dry Run Mode:</strong> Add a `--dry-run` flag to show which files would be moved without actually performing the operation.</li>
+                <li><strong class="font-semibold">Custom Grouping:</strong> Allow users to define custom rules for grouping extensions (e.g., move `.jpg`, `.png`, and `.gif` into a single `images` folder).</li>
+            </ul>
+        </section>
+
+    </main>
+
+    <footer class="text-center p-6 text-slate-500">
+        <p>&copy; 2025 Go File Organizer CLI Showcase</p>
+    </footer>
+
+    <script>
+        const sourceDir = document.getElementById('source-directory');
+        const destDir = document.getElementById('destination-directory');
+        const consoleLog = document.getElementById('console-log');
+        const runButton = document.getElementById('run-button');
+        const resetButton = document.getElementById('reset-button');
+
+        const initialFiles = [
+            { name: 'shivam_resume.pdf', type: 'file' },
+            { name: 'holiday_photo.jpg', type: 'file' },
+            { name: 'project_notes.txt', type: 'file' },
+            { name: 'archive.zip', type: 'file' },
+            { name: 'Subfolder', type: 'dir' },
+            { name: 'screenshot.png', type: 'file' },
+            { name: 'Dockerfile', type: 'file_no_ext' },
+            { name: 'app.js', type: 'file' },
+        ];
+
+        const fileIcons = {
+            pdf: '📄', txt: '📄', jpg: '🖼️', png: '🖼️', zip: '📦', js: '📜',
+        };
+
+        function createFileElement(file) {
+            const ext = file.name.split('.').pop().toLowerCase();
+            const icon = file.type === 'dir' ? '📁' : (file.type === 'file_no_ext' ? '⚙️' : (fileIcons[ext] || '📄'));
+            const element = document.createElement('div');
+            element.id = `file-${file.name.replace(/[^a-zA-Z0-9]/g, '-')}`;
+            element.className = 'file-item bg-white p-2 rounded border border-slate-300 flex items-center space-x-2 text-sm shadow-sm';
+            element.innerHTML = `<span class="text-lg">${icon}</span><span>${file.name}</span>`;
+            return element;
+        }
+
+        function setupInitialState() {
+            sourceDir.innerHTML = '';
+            destDir.innerHTML = '';
+            consoleLog.innerHTML = '';
+            initialFiles.forEach(file => {
+                sourceDir.appendChild(createFileElement(file));
+            });
+            runButton.disabled = false;
+            runButton.classList.remove('hidden');
+            resetButton.classList.add('hidden');
+        }
+        
+        function logToConsole(message, isCommand = false) {
+            const line = document.createElement('div');
+            if (isCommand) {
+                line.innerHTML = `<span class="text-cyan-400">$</span> <span class="text-white">${message}</span>`;
+            } else {
+                line.innerHTML = `<span class="text-slate-400">${message}</span>`;
+            }
+            consoleLog.appendChild(line);
+            consoleLog.scrollTop = consoleLog.scrollHeight;
+        }
+
+        async function runSimulation() {
+            runButton.disabled = true;
+            runButton.classList.add('hidden');
+            resetButton.classList.remove('hidden');
+            
+            logToConsole('go run main.go /path/to/directory', true);
+            await new Promise(res => setTimeout(res, 500));
+            logToConsole('Scanning directory: /path/to/directory');
+            logToConsole('--------------------');
+            logToConsole('Organizing files...');
+             await new Promise(res => setTimeout(res, 500));
+
+
+            for (const file of initialFiles) {
+                const fileElement = document.getElementById(`file-${file.name.replace(/[^a-zA-Z0-9]/g, '-')}`);
+
+                if (file.type === 'dir') {
+                    // In a real run this would just be skipped. For visual flair, we can fade it.
+                    fileElement.classList.add('fade-out');
+                    await new Promise(res => setTimeout(res, 300));
+                    continue;
+                }
+
+                const ext = file.name.includes('.') ? file.name.split('.').pop().toLowerCase() : '';
+                
+                if (ext === '') {
+                    logToConsole(` - Skipping file with no extension: ${file.name}`);
+                    fileElement.classList.add('fade-out');
+                    await new Promise(res => setTimeout(res, 300));
+                    continue;
+                }
+                
+                const dirName = ext;
+                let destFolder = document.getElementById(`folder-${dirName}`);
+
+                if (!destFolder) {
+                    destFolder = document.createElement('div');
+                    destFolder.id = `folder-${dirName}`;
+                    destFolder.className = 'folder-item bg-blue-50 p-2 rounded border border-blue-200 mt-2';
+                    destFolder.innerHTML = `<div class="font-semibold text-blue-800 flex items-center space-x-2"><span class="text-xl">📁</span><span>${dirName}/</span></div>`;
+                    destDir.appendChild(destFolder);
+                }
+
+                logToConsole(` - Moved ${file.name} -> ${dirName}/`);
+                
+                // Animate move
+                fileElement.classList.add('fade-out');
+                await new Promise(res => setTimeout(res, 400));
+                sourceDir.removeChild(fileElement);
+
+                const newFileElement = createFileElement(file);
+                newFileElement.classList.add('ml-4', 'mt-1'); // Indent file in folder
+                destFolder.appendChild(newFileElement);
+                
+                await new Promise(res => setTimeout(res, 300));
+            }
+            
+            await new Promise(res => setTimeout(res, 500));
+            logToConsole('--------------------');
+            logToConsole('Organization complete.');
+        }
+
+        runButton.addEventListener('click', runSimulation);
+        resetButton.addEventListener('click', setupInitialState);
+
+        // Initial setup
+        document.addEventListener('DOMContentLoaded', setupInitialState);
+    </script>
+</body>
+</html>
