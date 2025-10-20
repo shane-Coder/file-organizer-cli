@@ -26,14 +26,6 @@ A simple and efficient command-line tool built with Go to automatically organize
 2.  Navigate to the project directory in your terminal.
 3.  Run the program using `go run`, providing the path to the directory you want to organize as a command-line argument.
 
-### Example Command
-
-```bash
-# To organize files in a directory located at /home/user/Downloads
-go run main.go /home/user/Downloads
-
----
-
 ### ⚠️ **Safety Warning**
 
 This tool permanently moves files on your filesystem. It is highly recommended to **first test it on a sample directory** with copied files before running it on important directories.
@@ -45,3 +37,9 @@ This tool permanently moves files on your filesystem. It is highly recommended t
 - **Dry Run Mode**: Add a `--dry-run` flag to show which files would be moved without actually performing the operation.
 - **Custom Grouping**: Allow users to define custom rules for grouping extensions (e.g., move `.jpg`, `.png`, and `.gif` into a single `images` folder).
 - **Unit Tests**: Add table-driven tests for the core organization logic.
+
+### Example Command
+
+```bash
+# To organize files in a directory located at /home/user/Downloads
+go run main.go /home/user/Downloads
